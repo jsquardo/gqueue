@@ -26,3 +26,12 @@ pub fn is_empty_test() {
   let q = gqueue.enqueue(q, 1)
   assert gqueue.is_empty(q) == False
 }
+
+pub fn size_test() {
+  let q = gqueue.new()
+  assert gqueue.size(q) == 0
+  let q = gqueue.enqueue(q, 1)
+  let q = gqueue.enqueue(q, 2)
+  let q = gqueue.enqueue(q, 3)
+  assert gqueue.size(q) == 3
+}

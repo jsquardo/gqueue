@@ -29,3 +29,7 @@ pub fn dequeue(queue: Queue(a)) -> Option(#(a, Queue(a))) {
 pub fn is_empty(q: Queue(a)) -> Bool {
   q.front == [] && q.back == []
 }
+
+pub fn size(q: Queue(a)) -> Int {
+  q.size
+}
