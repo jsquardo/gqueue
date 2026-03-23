@@ -24,30 +24,36 @@ A purely functional queue library for Gleam, to be published on hex.pm.
 
 ### Phase overview
 - [x] Phase 1 — Naive list-backed queue (just make it work) ← COMPLETE
-- [ ] Phase 2 — Two-list optimization (discover the O(n) problem, fix it)
-- [ ] Phase 3 — Ergonomics (peek, map, filter, fold, to_list, from_list)
+- [x] Phase 2 — Two-list optimization (discover the O(n) problem, fix it) ← COMPLETE
+- [x] Phase 3 — Ergonomics (peek, map, filter, fold, to_list, from_list) ← COMPLETE
 - [ ] Phase 4 — Polish and publish to hex.pm
 
 ---
 
 ## Current status
 
-**Active phase:** Phase 2 — `size` field added, need to write public `size()` function
+**Active phase:** Phase 4 — Polish and publish to hex.pm
 
-**Last session:** 2026-03-20
+**Last session:** 2026-03-23
 
 **What we've built so far:**
 - Project initialized with `gleam new .`
 - `Queue(a)` type defined with `front`, `back`, and `size` fields
-- `new()` — returns an empty queue with size: 0
-- `enqueue(queue, item)` — prepends item to `back`, increments size
-- `dequeue(queue)` — returns `Option(#(a, Queue(a)))`, decrements size, reverses `back` into `front` when `front` is empty
+- `new()` — empty queue, size: 0
+- `enqueue(queue, item)` — prepends to `back`, increments size
+- `dequeue(queue)` — returns `Option(#(a, Queue(a)))`, decrements size, reverses `back` into `front` when needed
 - `is_empty(queue)` — returns `Bool`
-- 3 passing tests
-- `test/benchmark.gleam` — fixed to use tail-recursive `dequeue_all` with accumulator
-- Confirmed amortized O(1) scaling: 100k→1800µs, 200k→3100µs, 1M→26000µs
+- `size(queue)` — returns `Int`, O(1)
+- `peek(queue)` — returns `Option(a)`, does not modify queue
+- `to_list(queue)` — returns items in queue order
+- `from_list(list)` — builds queue from list using accumulator pattern
+- `map(queue, f)` — transforms every item
+- `filter(queue, f)` — keeps items matching predicate
+- `fold(queue, initial, f)` — reduces queue to single value
+- 10 passing tests
+- `test/benchmark.gleam` — tail-recursive, confirmed amortized O(1)
 
-**Next step:** Write the public `size()` function (Johnny is attempting this independently before next session).
+**Next step:** Phase 4 — add doc comments, review gleam.toml metadata, write a README, then publish to hex.pm.
 
 ---
 
@@ -63,12 +69,15 @@ A purely functional queue library for Gleam, to be published on hex.pm.
 - Tuples with `#()`
 - `case` as pattern matching (not just switch — destructures data simultaneously)
 - Spread operator `[item, ..rest]`
+- Tail recursion and accumulator pattern
+- Higher-order functions (`map`, `filter`, `fold`) — what they do and how to use them
+- Internal vs external representation (why `back` is reversed, why users don't see it)
+- Functions as arguments (`fn(a) -> b` type syntax)
 
 ### Needs more time / came up in questions
 - O(n) vs O(1) intuition — understands the concept but predicting actual time scaling is still developing
-- Pattern matching depth — only seen basic examples so far
-- Recursion as a replacement for loops — practiced tail recursion with accumulator this session, getting stronger
-- Tradeoffs of storing derived state (e.g. size field) — introduced, understood well
+- Recursion comfort — getting stronger but still feels foreign; needs more exposure
+- Writing recursive functions from scratch independently (needed help with `from_list`)
 
 ### Open questions from last session
 (none)
@@ -122,6 +131,15 @@ A purely functional queue library for Gleam, to be published on hex.pm.
 **Needs reinforcement:** Nothing new flagged this session
 **Stopped at:** About to write the public `size()` function — Johnny attempting independently before next session
 **Next step:** Review Johnny's `size()` attempt, write a test for it, then consider Phase 2 complete and move to Phase 3 ergonomics
+
+### Session 5 — 2026-03-23
+**Date:** 2026-03-23
+**Covered:** Reviewed `size()` (written independently!), Phase 3 ergonomics in full — `peek`, `to_list`, `from_list`, `map`, `filter`, `fold`. 10 passing tests. Phases 1–3 complete.
+**Concepts introduced:** Higher-order functions, `fn(a) -> b` type syntax, internal vs external representation, accumulator pattern for `from_list`, visual debugging (traced values through recursive calls)
+**Johnny seemed solid on:** `peek`, `to_list`, `map`, `filter`, `fold` — wrote most independently or near-independently. Understood why `to_list` always shows correct order despite internal reversal. Correctly predicted all expected values ([2,3,4], [4,5], 6).
+**Needs reinforcement:** Writing recursive functions from scratch — needed guidance on `from_list` (got the structure but had order reversed, needed accumulator explanation)
+**Stopped at:** Phase 3 complete, 10 passing tests
+**Next step:** Phase 4 — doc comments, gleam.toml metadata, README, publish to hex.pm
 
 ---
 
